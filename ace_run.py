@@ -141,6 +141,8 @@ def parse_arguments(argv):
       help='Directory to save the results.', default='./ACE')
   parser.add_argument('--model_to_run', type=str,
       help='The name of the model.', default='InceptionV3')
+  parser.add_argument('--model_path', type=str,
+      help='Path to model checkpoints.', default='./checkpoints')
   parser.add_argument('--target_class', type=str,
       help='The name of the target class to be interpreted', default='Zebra')
   parser.add_argument('--bottlenecks', type=str,

@@ -20,22 +20,39 @@ Required python libraries:
 An example run command:
 
 ```
-python3 run_ace.py --source_dir SOURCE_DIR --test_dir TEST_DIR --working_dir SAVE_DIR --model_to_run InceptionV3 --bottlenecks mixed_8 --num_test 20 --num_random_exp 40 --max_imgs 50 --min_imgs 30
+python3 run_ace.py --num_parallel_runs 0 --target_class Zebra --source_dir SOURCE_DIR ---working_dir SAVE_DIR --model_to_run InceptionV3 --model_path PATH_TO_MODEL_CHECKPOINT --bottlenecks mixed_8 --num_test 20 --num_random_exp 40 --max_imgs 50 --min_imgs 30 --test_dir TEST_DIR 
 ```
 
 where:
 ```
+num_parallel_runs: Number of parallel jobs (loading images, etc). If 0, parallel processing is deactivated.
+```
+
+```
+target_class: Name of the class to be explained.
+```
+
+```
 SOURCE_DIR: Directory where the discovery images (refer to the paper) are saved. 
-It should contain two folders: 
+It should contain (at least) two folders: 
 1-"target_class" which contains images of the class to be explained. 
 2-"random_discovery" which contains randomly selected images of the same dataset.
+```
+
+```
+SAVE_DIR: Where the experiment results (both text report and the discovered concept examples) are saved.
+```
+
+```
+model_to_run: One of InceptionV3 or GoogleNet is supported. You can change the "make_model" function in ace_helpers.py to have your own customized model.
+model_path: Path to the model's saved graph.
 ```
 
 ```
 TEST_DIR: Used for the profile classifier experiment (not part of the paper).
 If None, the profile classifier experiment is not performed.
 Same as source_dir:
-1-"target_class" which contains test images of the class to be explained. 
+1-"Name of the target class (here zebra)" which contains test images of the class to be explained. 
 2-"random_test" which contains test images randomly selected from the test data.
 ```
 End with an example of getting some data out of the system or using it for a little demo
@@ -80,9 +97,11 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Amirata Ghorbani** - [Website](http://web.stanford.edu/~amiratag)
+* **James Wexler** - [Website](https://ai.google/research/people/105507/)
+* **James Zou** - [Website](https://sites.google.com/site/jamesyzou/)
+* **Been Kim** - [Website](https://beenkim.github.io/)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
@@ -90,8 +109,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+Work was done as part of Google Brain internship.
 # ACE
 

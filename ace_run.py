@@ -96,6 +96,8 @@ def main(args):
     for i, concept in enumerate(cd.dic[bn]['concepts']):
       report += concept + ':' + str(lm.coef_[-1][i]) + '\n'
   # Test profile classifier on test images
+  if test_dir is None:
+    return
   cd.source_dir = test_dir
   pos_imgs = cd.load_concept_imgs(cd.target_class, num_test)
   neg_imgs = cd.load_concept_imgs('random500_180', num_test)

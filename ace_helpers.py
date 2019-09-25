@@ -13,15 +13,15 @@ from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
 import tensorflow as tf
 
-def make_model(model_to_run, sess, randomize=False, model_path,
+def make_model(sess, model_to_run, model_path, randomize=False,
                labels_path=None):
   """Make an instance of a model.
 
   Args:
-    model_to_run: a string that describes which model to make.
     sess: tf session instance.
+    model_to_run: a string that describes which model to make.
+    model_path: Path to models saved graph.
     randomize: Start with random weights
-    model_path: Path to models saved graph. If None uses default paths
     labels_path: Path to models line separated labels text file. If None uses
                  default labels.
 

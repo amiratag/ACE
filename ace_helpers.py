@@ -13,7 +13,7 @@ from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
 import tensorflow as tf
 
-def make_model(model_to_run, sess, randomize=False, model_path=None,
+def make_model(model_to_run, sess, randomize=False, model_path,
                labels_path=None):
   """Make an instance of a model.
 
@@ -31,21 +31,10 @@ def make_model(model_to_run, sess, randomize=False, model_path=None,
   Raises:
     ValueError: If model name is not valid.
   """
-  models_root = MODEL_LOCATION 
   if model_to_run == 'InceptionV3':
-    basepath = models_root + 'inception_v3/'
-    if model_path is None:
-      model_path = basepath + 'tensorflow_inception_graph.pb'
-    if labels_path is None:
-      labels_path = basepath + 'imagenet_comp_graph_label_strings.txt'
     mymodel = model.InceptionV3Wrapper_public(
         sess, model_saved_path=model_path, labels_path=labels_path)
   elif model_to_run == 'GoogleNet':
-    basepath = models_root + 'tensorflow_inception/'
-    if model_path is None:
-      model_path = basepath + 'tensorflow_inception_graph.pb'
-    if labels_path is None:
-      labels_path = basepath + 'imagenet_comp_graph_label_strings.txt'
     # common_typos_disable
     mymodel = model.GoolgeNetWrapper_public(
         sess, model_saved_path=model_path, labels_path=labels_path)

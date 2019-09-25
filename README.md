@@ -25,9 +25,19 @@ python3 run_ace.py --source_dir SOURCE_DIR --test_dir TEST_DIR --working_dir SAV
 
 where:
 ```
-SOURCE_DIR: Directory where the discovery images (refer to the paper) are saved. It should contain two folders: 1-"target_class" which contains images of the class to be explained. 2-"random500_100" which contains randomly selected images of the same dataset.
+SOURCE_DIR: Directory where the discovery images (refer to the paper) are saved. 
+It should contain two folders: 
+1-"target_class" which contains images of the class to be explained. 
+2-"random_discovery" which contains randomly selected images of the same dataset.
 ```
 
+```
+TEST_DIR: Used for the profile classifier experiment (not part of the paper).
+If None, the profile classifier experiment is not performed.
+Same as source_dir:
+1-"target_class" which contains test images of the class to be explained. 
+2-"random_test" which contains test images randomly selected from the test data.
+```
 End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests

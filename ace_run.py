@@ -15,25 +15,15 @@ import argparse
 
 def main(args):
 
-  source_dir = args.source_dir
-  test_dir = args.test_dir
-  working_dir = args.working_dir
-  model_to_run = args.model_to_run
-  target_class = args.target_class
-  bottlenecks = args.bottlenecks.split(',')
-  num_test = args.num_test
-  num_random_exp = args.num_random_exp
-  max_imgs = args.max_imgs
-  min_imgs = args.min_imgs
   ###### related DIRs on CNS to store results #######
   discovered_concepts_dir = os.path.join(working_dir, 'concepts/')
-  results_dir = os.path.join(working_dir, 'results/')
-  cavs_dir = os.path.join(working_dir, 'cavs/')
-  activations_dir = os.path.join(working_dir, 'acts/')
-  results_summaries_dir = os.path.join(working_dir, 'results_summaries/')
-  if tf.gfile.Exists(working_dir):
-    tf.gfile.DeleteRecursively(working_dir)
-  tf.gfile.MakeDirs(working_dir)
+  results_dir = os.path.join(args.working_dir, 'results/')
+  cavs_dir = os.path.join(args.working_dir, 'cavs/')
+  activations_dir = os.path.join(args.working_dir, 'acts/')
+  results_summaries_dir = os.path.join(args.working_dir, 'results_summaries/')
+  if tf.gfile.Exists(args.working_dir):
+    tf.gfile.DeleteRecursively(args.working_dir)
+  tf.gfile.MakeDirs(args.working_dir)
   tf.gfile.MakeDirs(discovered_concepts_dir)
   tf.gfile.MakeDirs(results_dir)
   tf.gfile.MakeDirs(cavs_dir)
@@ -41,23 +31,23 @@ def main(args):
   tf.gfile.MakeDirs(results_summaries_dir)
   random_concept = 'random_discovery'  # Random concept for statistical testing
   sess = utils.create_session()
-  mymodel = ace_helpers.make_model(model_to_run, sess)
+  mymodel = ace_helpers.make_model(sess, args.model_to_run, args.model_path)
   # Creating the ConceptDiscovery class instance
   cd = ConceptDiscovery(
       mymodel,
-      target_class,
+      args.target_class,
       random_concept,
-      bottlenecks,
+      args.bottlenecks.split(','),
       sess,
-      source_dir,
+      args.source_dir,
       activations_dir,
       cavs_dir,
-      num_random_exp=num_random_exp,
+      num_random_exp=args.num_random_exp,
       channel_mean=True,
-      max_imgs=max_imgs,
-      min_imgs=min_imgs,
-      num_discovery_imgs=max_imgs,
-      num_workers=25)
+      max_imgs=args.max_imgs,
+      min_imgs=args.min_imgs,
+      num_discovery_imgs=args.max_imgs,
+      num_workers=args.num_parallel_workers)
   # Creating the dataset of image patches
   cd.create_patches(param_dict={'n_segments': [15, 50, 80]})
   # Saving the concept discovery target class images
@@ -85,9 +75,10 @@ def main(args):
   # Train a binary classifier on concept profiles
   report = '\n\n\t\t\t ---Concept space---'
   report += '\n\t ---Classifier Weights---\n\n'
-  pos_imgs = cd.load_concept_imgs(cd.target_class,
-                                  2 * cd.max_imgs + num_test)[-num_test:]
-  neg_imgs = cd.load_concept_imgs('random_test', num_test)
+  pos_imgs = cd.load_concept_imgs(
+    cd.target_class,
+    2 * cd.max_imgs + args.num_test)[-args.num_test:]
+  neg_imgs = cd.load_concept_imgs('random_test', args.num_test)
   a = ace_helpers.flat_profile(cd, pos_imgs)
   b = ace_helpers.flat_profile(cd, neg_imgs)
   lm, _ = ace_helpers.cross_val(a, b, methods=['logistic'])
@@ -96,11 +87,11 @@ def main(args):
     for i, concept in enumerate(cd.dic[bn]['concepts']):
       report += concept + ':' + str(lm.coef_[-1][i]) + '\n'
   # Test profile classifier on test images
-  if test_dir is None:
+  if args.test_dir is None:
     return
-  cd.source_dir = test_dir
-  pos_imgs = cd.load_concept_imgs(cd.target_class, num_test)
-  neg_imgs = cd.load_concept_imgs('random500_180', num_test)
+  cd.source_dir = args.test_dir
+  pos_imgs = cd.load_concept_imgs(cd.target_class, args.num_test)
+  neg_imgs = cd.load_concept_imgs('random500_180', args.num_test)
   a = ace_helpers.flat_profile(cd, pos_imgs)
   b = ace_helpers.flat_profile(cd, neg_imgs)
   x, y = ace_helpers.binary_dataset(a, b, balanced=True)
@@ -160,6 +151,9 @@ def parse_arguments(argv):
   parser.add_argument('--min_imgs', type=int,
       help="Minimum number of images in a discovered concept",
                       default=40)
+  parser.add_argument('--num_parallel_workers', type=int,
+      help="Number of parallel jobs.",
+                      default=0)
   return parser.parse_args(argv)
 
 

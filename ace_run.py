@@ -16,7 +16,7 @@ import argparse
 def main(args):
 
   ###### related DIRs on CNS to store results #######
-  discovered_concepts_dir = os.path.join(working_dir, 'concepts/')
+  discovered_concepts_dir = os.path.join(args.working_dir, 'concepts/')
   results_dir = os.path.join(args.working_dir, 'results/')
   cavs_dir = os.path.join(args.working_dir, 'cavs/')
   activations_dir = os.path.join(args.working_dir, 'acts/')
@@ -31,7 +31,8 @@ def main(args):
   tf.gfile.MakeDirs(results_summaries_dir)
   random_concept = 'random_discovery'  # Random concept for statistical testing
   sess = utils.create_session()
-  mymodel = ace_helpers.make_model(sess, args.model_to_run, args.model_path)
+  mymodel = ace_helpers.make_model(
+      sess, args.model_to_run, args.model_path, args.labels_path)
   # Creating the ConceptDiscovery class instance
   cd = ConceptDiscovery(
       mymodel,
@@ -72,52 +73,6 @@ def main(args):
     ace_helpers.plot_concepts(cd, bn, 10, address=results_dir)
   # Delete concepts that don't pass statistical testing
   cd.test_and_remove_concepts(scores)
-  # Train a binary classifier on concept profiles
-  report = '\n\n\t\t\t ---Concept space---'
-  report += '\n\t ---Classifier Weights---\n\n'
-  pos_imgs = cd.load_concept_imgs(
-    cd.target_class,
-    2 * cd.max_imgs + args.num_test)[-args.num_test:]
-  neg_imgs = cd.load_concept_imgs('random_test', args.num_test)
-  a = ace_helpers.flat_profile(cd, pos_imgs)
-  b = ace_helpers.flat_profile(cd, neg_imgs)
-  lm, _ = ace_helpers.cross_val(a, b, methods=['logistic'])
-  for bn in cd.bottlenecks:
-    report += bn + ':\n'
-    for i, concept in enumerate(cd.dic[bn]['concepts']):
-      report += concept + ':' + str(lm.coef_[-1][i]) + '\n'
-  # Test profile classifier on test images
-  if args.test_dir is None:
-    return
-  cd.source_dir = args.test_dir
-  pos_imgs = cd.load_concept_imgs(cd.target_class, args.num_test)
-  neg_imgs = cd.load_concept_imgs('random500_180', args.num_test)
-  a = ace_helpers.flat_profile(cd, pos_imgs)
-  b = ace_helpers.flat_profile(cd, neg_imgs)
-  x, y = ace_helpers.binary_dataset(a, b, balanced=True)
-  probs = lm.predict_proba(x)[:, 1]
-  report += '\nProfile Classifier accuracy= {}'.format(
-      np.mean((probs > 0.5) == y))
-  report += '\nProfile Classifier AUC= {}'.format(
-      metrics.roc_auc_score(y, probs))
-  report += '\nProfile Classifier PR Area= {}'.format(
-      metrics.average_precision_score(y, probs))
-  # Compare original network to profile classifier
-  target_id = cd.model.label_to_id(cd.target_class.replace('_', ' '))
-  predictions = []
-  for img in pos_imgs:
-    predictions.append(mymodel.get_predictions([img]))
-  predictions = np.concatenate(predictions, 0)
-  true_predictions = (np.argmax(predictions, -1) == target_id).astype(int)
-  truly_predicted = np.where(true_predictions)[0]
-  report += '\nNetwork Recall = ' + str(np.mean(true_predictions))
-  report += ', ' + str(np.mean(np.max(predictions, -1)[truly_predicted]))
-  agreeableness = np.sum(lm.predict(a) * true_predictions)*1./\
-      np.sum(true_predictions + 1e-10)
-  report += '\nProfile classifier agrees with network in {}%'.format(
-      100 * agreeableness)
-  with tf.gfile.Open(results_summaries_dir + 'profile_classifier.txt', 'w') as f:
-    f.write(report)
 
 def parse_arguments(argv):
   """Parses the arguments passed to the run.py script."""
@@ -131,14 +86,16 @@ def parse_arguments(argv):
   parser.add_argument('--working_dir', type=str,
       help='Directory to save the results.', default='./ACE')
   parser.add_argument('--model_to_run', type=str,
-      help='The name of the model.', default='InceptionV3')
+      help='The name of the model.', default='GoogleNet')
   parser.add_argument('--model_path', type=str,
-      help='Path to model checkpoints.', default='./checkpoints')
+      help='Path to model checkpoints.', default='./tensorflow_inception_graph.pb')
+  parser.add_argument('--labels_path', type=str,
+      help='Path to model checkpoints.', default='./imagenet_labels.txt')
   parser.add_argument('--target_class', type=str,
       help='The name of the target class to be interpreted', default='Zebra')
   parser.add_argument('--bottlenecks', type=str,
       help='Names of the target layers of the network (comma separated)',
-                      default='mixed_8')
+                      default='mixed4c')
   parser.add_argument('--num_test', type=int,
       help="Number of test images used for binary profile classifier",
                       default=20)

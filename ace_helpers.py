@@ -129,7 +129,7 @@ def get_acts_from_images(imgs, model, bottleneck_name):
   Returns:
     numpy array of activations.
   """
-  return np.asarray(model.run_imgs(imgs, bottleneck_name)).squeeze()
+  return np.asarray(model.run_examples(imgs, bottleneck_name)).squeeze()
 
 
 def flat_profile(cd, images, bottlenecks=None):
@@ -413,7 +413,8 @@ def save_ace_report(cd, accs, scores, address):
     for concept in cd.dic[bn]['concepts']:
       report += '\n' + bn + ':' + concept + ':' + str(
           np.mean(accs[bn][concept]))
-  save_report(address, report)
+  with tf.gfile.Open(address, 'w') as f:
+    f.write(report)
   report = '\n\n\t\t\t ---TCAV scores---'
   for bn in cd.bottlenecks:
     report += '\n'
@@ -422,7 +423,7 @@ def save_ace_report(cd, accs, scores, address):
           scores[bn][concept], scores[bn][cd.random_concept])
       report += '\n{}:{}:{},{}'.format(bn, concept,
                                        np.mean(scores[bn][concept]), pvalue)
-  with tf.gfile.open(address, 'w') as f:
+  with tf.gfile.Open(address, 'w') as f:
     f.write(report)
 
 

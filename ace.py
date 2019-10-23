@@ -475,8 +475,7 @@ class ConceptDiscovery(object):
         np.save(f, acts, allow_pickle=False)
       del acts
       del rnd_imgs
-    with tf.gfile.Open(rnd_acts_path, 'r') as f:
-      return np.load(f).squeeze()
+    return np.load(rnd_acts_path).squeeze()
 
   def _calculate_cav(self, c, r, bn, act_c, ow, directory=None):
     """Calculates a sinle cav for a concept and a one random counterpart.

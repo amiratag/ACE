@@ -15,7 +15,7 @@ import skimage.segmentation as segmentation
 import sklearn.cluster as cluster
 import sklearn.metrics.pairwise as metrics
 import tensorflow as tf
-from tcav import cav, tcav_helpers
+from tcav import cav
 class ConceptDiscovery(object):
   """Discovering and testing concepts of a class.
 
@@ -113,7 +113,7 @@ class ConceptDiscovery(object):
         os.path.join(concept_dir, d)
         for d in tf.gfile.ListDirectory(concept_dir)
     ]
-    return tcav_helpers.load_images_from_files(
+    return load_images_from_files(
         img_paths,
         max_imgs=max_imgs,
         return_filenames=False,
@@ -467,7 +467,7 @@ class ConceptDiscovery(object):
         random_concept, bottleneck))
     if not tf.gfile.Exists(rnd_acts_path):
       rnd_imgs = self.load_concept_imgs(random_concept, self.max_imgs)
-      acts = tcav_helpers.get_acts_from_images(rnd_imgs, self.model, bottleneck)
+      acts = get_acts_from_images(rnd_imgs, self.model, bottleneck)
       with tf.gfile.Open(rnd_acts_path, 'w') as f:
         np.save(f, acts, allow_pickle=False)
       del acts
@@ -554,12 +554,12 @@ class ConceptDiscovery(object):
     for bn in self.bottlenecks:
       for concept in self.dic[bn]['concepts']:
         concept_imgs = self.dic[bn][concept]['images']
-        concept_acts = tcav_helpers.get_acts_from_images(
+        concept_acts = get_acts_from_images(
             concept_imgs, self.model, bn)
         acc[bn][concept] = self._concept_cavs(bn, concept, concept_acts, ow=ow)
         if np.mean(acc[bn][concept]) < min_acc:
           concepts_to_delete.append((bn, concept))
-      target_class_acts = tcav_helpers.get_acts_from_images(
+      target_class_acts = get_acts_from_images(
           self.discovery_images, self.model, bn)
       acc[bn][self.target_class] = self._concept_cavs(
           bn, self.target_class, target_class_acts, ow=ow)
@@ -613,7 +613,7 @@ class ConceptDiscovery(object):
     gradients = {}
     class_id = self.model.label_to_id(self.target_class.replace('_', ' '))
     for bn in self.bottlenecks:
-      acts = tcav_helpers.get_acts_from_images(images, self.model, bn)
+      acts = get_acts_from_images(images, self.model, bn)
       bn_grads = np.zeros((acts.shape[0], np.prod(acts.shape[1:])))
       for i in range(len(acts)):
         bn_grads[i] = self.model.get_gradient(
@@ -765,7 +765,7 @@ class ConceptDiscovery(object):
     """
     profile = np.zeros((len(images), len(self.dic[bn]['concepts']),
                         self.num_random_exp))
-    class_acts = tcav_helpers.get_acts_from_images(
+    class_acts = get_acts_from_images(
         images, self.model, bn).reshape([len(images), -1])
     randoms = ['random500_{}'.format(i) for i in range(self.num_random_exp)]
     for i, concept in enumerate(self.dic[bn]['concepts']):

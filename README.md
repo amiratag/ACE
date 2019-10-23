@@ -20,7 +20,7 @@ Required python libraries:
 An example run command:
 
 ```
-python3 run_ace.py --num_parallel_runs 0 --target_class Zebra --source_dir SOURCE_DIR ---working_dir SAVE_DIR --model_to_run InceptionV3 --model_path PATH_TO_MODEL_CHECKPOINT --bottlenecks mixed_8 --num_test 20 --num_random_exp 40 --max_imgs 50 --min_imgs 30 --test_dir TEST_DIR 
+python3 run_ace.py --num_parallel_runs 0 --target_class zebra --source_dir SOURCE_DIR ---working_dir SAVE_DIR --model_to_run GoogleNet --model_path PATH_TO_MODEL_CHECKPOINT --bottlenecks mixed4c --num_test 20 --num_random_exp 40 --max_imgs 50 --min_imgs 30 --test_dir TEST_DIR 
 ```
 
 where:
@@ -44,7 +44,7 @@ SAVE_DIR: Where the experiment results (both text report and the discovered conc
 ```
 
 ```
-model_to_run: One of InceptionV3 or GoogleNet is supported. You can change the "make_model" function in ace_helpers.py to have your own customized model.
+model_to_run: One of InceptionV3 or GoogleNet is supported (the weights are provided for GoogleNet). You can change the "make_model" function in ace_helpers.py to have your own customized model.
 model_path: Path to the model's saved graph.
 ```
 

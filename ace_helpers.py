@@ -13,8 +13,8 @@ from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
 import tensorflow as tf
 
-def make_model(sess, model_to_run, model_path, randomize=False,
-               labels_path=None):
+def make_model(sess, model_to_run, model_path, 
+               labels_path, randomize=False,):
   """Make an instance of a model.
 
   Args:
@@ -22,8 +22,7 @@ def make_model(sess, model_to_run, model_path, randomize=False,
     model_to_run: a string that describes which model to make.
     model_path: Path to models saved graph.
     randomize: Start with random weights
-    labels_path: Path to models line separated labels text file. If None uses
-                 default labels.
+    labels_path: Path to models line separated class names text file.
 
   Returns:
     a model instance.
@@ -43,6 +42,35 @@ def make_model(sess, model_to_run, model_path, randomize=False,
   if randomize:  # randomize the network!
     sess.run(tf.global_variables_initializer())
   return mymodel
+
+
+def load_image_from_file(filename, shape):
+  """Given a filename, try to open the file. If failed, return None.
+  Args:
+    filename: location of the image file
+    shape: the shape of the image file to be scaled
+  Returns:
+    the image if succeeds, None if fails.
+  Rasies:
+    exception if the image was not the right shape.
+  """
+  if not tf.gfile.Exists(filename):
+    tf.logging.error('Cannot find file: {}'.format(filename))
+    return None
+  try:
+    img = np.array(Image.open(filename).resize(
+        shape, Image.BILINEAR))
+    # Normalize pixel values to between 0 and 1.
+    img = np.float32(img) / 255.0
+    if not (len(img.shape) == 3 and img.shape[2] == 3):
+      return None
+    else:
+      return img
+
+  except Exception as e:
+    tf.logging.info(e)
+    return None
+  return img
 
 
 def load_images_from_files(filenames, max_imgs=500, return_filenames=False,
@@ -68,7 +96,6 @@ def load_images_from_files(filenames, max_imgs=500, return_filenames=False,
     np.random.shuffle(filenames)
   if return_filenames:
     final_filenames = []
-
   if run_parallel:
     pool = multiprocessing.Pool(num_workers)
     imgs = pool.map(lambda filename: load_image_from_file(filename, shape),

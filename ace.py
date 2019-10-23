@@ -16,6 +16,9 @@ import sklearn.cluster as cluster
 import sklearn.metrics.pairwise as metrics
 import tensorflow as tf
 from tcav import cav
+from ace_helpers import *
+
+
 class ConceptDiscovery(object):
   """Discovering and testing concepts of a class.
 
@@ -291,13 +294,13 @@ class ConceptDiscovery(object):
     if self.num_workers:
       pool = multiprocessing.Pool(self.num_workers)
       output = pool.map(
-          lambda i: self.model.run_imgs(imgs[i * bs:(i + 1) * bs], bottleneck),
+          lambda i: self.model.run_examples(imgs[i * bs:(i + 1) * bs], bottleneck),
           np.arange(int(imgs.shape[0] / bs) + 1))
     else:
       output = []
       for i in range(int(imgs.shape[0] / bs) + 1):
         output.append(
-            self.model.run_imgs(imgs[i * bs:(i + 1) * bs], bottleneck))
+            self.model.run_examples(imgs[i * bs:(i + 1) * bs], bottleneck))
     output = np.concatenate(output, 0)
     if channel_mean and len(output.shape) > 3:
       output = np.mean(output, (1, 2))

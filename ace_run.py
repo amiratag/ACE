@@ -79,10 +79,7 @@ def parse_arguments(argv):
   parser = argparse.ArgumentParser()
   parser.add_argument('--source_dir', type=str,
       help='''Directory where the network's classes image folders and random
-      concept folders are saved.''', default='./Imagenet_train')
-  parser.add_argument('--test_dir', type=str,
-      help='''Directory where the network's classes test image folders and random
-      concept folders are saved.''', default='./Imagenet_test')
+      concept folders are saved.''', default='./ImageNet')
   parser.add_argument('--working_dir', type=str,
       help='Directory to save the results.', default='./ACE')
   parser.add_argument('--model_to_run', type=str,
@@ -92,13 +89,10 @@ def parse_arguments(argv):
   parser.add_argument('--labels_path', type=str,
       help='Path to model checkpoints.', default='./imagenet_labels.txt')
   parser.add_argument('--target_class', type=str,
-      help='The name of the target class to be interpreted', default='Zebra')
+      help='The name of the target class to be interpreted', default='zebra')
   parser.add_argument('--bottlenecks', type=str,
       help='Names of the target layers of the network (comma separated)',
                       default='mixed4c')
-  parser.add_argument('--num_test', type=int,
-      help="Number of test images used for binary profile classifier",
-                      default=20)
   parser.add_argument('--num_random_exp', type=int,
       help="Number of random experiments used for statistical testing, etc",
                       default=20)

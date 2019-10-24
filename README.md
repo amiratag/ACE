@@ -48,13 +48,6 @@ model_to_run: One of InceptionV3 or GoogleNet is supported (the weights are prov
 model_path: Path to the model's saved graph.
 ```
 
-```
-TEST_DIR: Used for the profile classifier experiment (not part of the paper).
-If None, the profile classifier experiment is not performed.
-Same as source_dir:
-1-"Name of the target class (here zebra)" which contains test images of the class to be explained. 
-2-"random_test" which contains test images randomly selected from the test data.
-```
 
 ## Authors
 

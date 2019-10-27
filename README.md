@@ -25,19 +25,26 @@ python3 run_ace.py --num_parallel_runs 0 --target_class zebra --source_dir SOURC
 
 where:
 ```
-num_parallel_runs: Number of parallel jobs (loading images, etc). If 0, parallel processing is deactivated.
+num_random_exp: number of random concepts with respect to which concept-activaion-vectors are computed for calculating the TCAV score of a discovered concept (recommended >20).
 ```
+For example if you set num_random_exp=20, you need to create folders random500_0, rando500_1, ..., random_500_19 and put them in the SOURCE_DIR where each folder contains a set of 500 randomly selected images of the dataset (ImageNet in our case). 
 
 ```
-target_class: Name of the class to be explained.
+target_class: Name of the class which prediction is to be explained.
 ```
 
 ```
 SOURCE_DIR: Directory where the discovery images (refer to the paper) are saved. 
-It should contain (at least) two folders: 
+It should contain (at least) num_random_exp + 2 folders: 
 1-"target_class" which contains images of the class to be explained. 
-2-"random_discovery" which contains randomly selected images of the same dataset.
+2-"random_discovery" which contains randomly selected images of the same dataset (at lease $max_imgs number of images).
+3-"random500_0, ..., random_500_${num_random_exp} where each one contains 500 randomly selected images from the data set"
 ```
+
+```
+num_parallel_runs: Number of parallel jobs (loading images, etc). If 0, parallel processing is deactivated.
+```
+
 
 ```
 SAVE_DIR: Where the experiment results (both text report and the discovered concept examples) are saved.
@@ -47,7 +54,13 @@ SAVE_DIR: Where the experiment results (both text report and the discovered conc
 model_to_run: One of InceptionV3 or GoogleNet is supported (the weights are provided for GoogleNet). You can change the "make_model" function in ace_helpers.py to have your own customized model.
 model_path: Path to the model's saved graph.
 ```
-
+If you are using a custom model, you should write a wrapper for it containing the following methods:
+```
+run_examples(images, BOTTLENECK_LAYER): which basically returens the activations of the images in the BOTTLENECK_LAYER. 'images' are original images without preprocessing (float between 0 and 1)
+get_image_shape(): returns the shape of the model's input
+label_to_id(CLASS_NAME): returns the id of the given class name.
+get_gradient(activations, CLASS_ID, BOTTLENECK_LAYER): computes the gradient of the CLASS_ID logit in the logit layer with respect to activations in the BOTTLENECK_LAYER.
+```
 
 ## Authors
 

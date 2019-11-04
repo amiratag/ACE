@@ -27,7 +27,7 @@ where:
 ```
 num_random_exp: number of random concepts with respect to which concept-activaion-vectors are computed for calculating the TCAV score of a discovered concept (recommended >20).
 ```
-For example if you set num_random_exp=20, you need to create folders random500_0, rando500_1, ..., random_500_19 and put them in the SOURCE_DIR where each folder contains a set of 500 randomly selected images of the dataset (ImageNet in our case). 
+For example if you set num_random_exp=20, you need to create folders random500_0, rando500_1, ..., random_500_19 and put them in the SOURCE_DIR where each folder contains a set of 50-500 randomly selected images of the dataset (ImageNet in our case). 
 
 ```
 target_class: Name of the class which prediction is to be explained.
@@ -36,7 +36,7 @@ target_class: Name of the class which prediction is to be explained.
 ```
 SOURCE_DIR: Directory where the discovery images (refer to the paper) are saved. 
 It should contain (at least) num_random_exp + 2 folders: 
-1-"target_class" which contains images of the class to be explained. 
+1-"target_class" which contains images of the class to be explained (in this example the shoulder should be names as zebra). 
 2-"random_discovery" which contains randomly selected images of the same dataset (at lease $max_imgs number of images).
 3-"random500_0, ..., random_500_${num_random_exp} where each one contains 500 randomly selected images from the data set"
 ```

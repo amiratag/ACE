@@ -20,7 +20,7 @@ Required python libraries:
 An example run command:
 
 ```
-python3 run_ace.py --num_parallel_runs 0 --target_class zebra --source_dir SOURCE_DIR ---working_dir SAVE_DIR --model_to_run GoogleNet --model_path ./tensorflow_inception_graph.pb --labels_path ./imagenet_labels.txt -bottlenecks mixed4c --num_random_exp 40 --max_imgs 50 --min_imgs 30
+python3 ace_run.py --num_parallel_runs 0 --target_class zebra --source_dir SOURCE_DIR --working_dir SAVE_DIR --model_to_run GoogleNet --model_path ./tensorflow_inception_graph.pb --labels_path ./imagenet_labels.txt --bottlenecks mixed4c --num_random_exp 40 --max_imgs 50 --min_imgs 30
 ```
 
 where:

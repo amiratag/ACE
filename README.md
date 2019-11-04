@@ -5,6 +5,9 @@ ACE: Towards Automatic Concept Based Explanations
 ## Getting Started
 Here is the tensorflow implementations of the paper [Towards Automatic Concept-based Explanations](https://arxiv.org/abs/1902.03129) presented at NeurIPS 2019.
 
+```
+Ghorbani, Amirata, James Wexler, James Y. Zou, and Been Kim. "Towards Automatic Concept-based Explanations." Advances in Neural Information Processing Systems. 2019.
+````
 ### Prerequisites
 
 Required python libraries:

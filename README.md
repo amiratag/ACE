@@ -81,7 +81,7 @@ get_gradient(activations, CLASS_ID, BOTTLENECK_LAYER): computes the gradient of 
 
 * **Amirata Ghorbani** - [Website](http://web.stanford.edu/~amiratag)
 * **James Wexler** - [Website](https://ai.google/research/people/105507/)
-* **James Zou** - [Website](https://sites.google.com/site/jamesyzou/)
+* **James Zou** - [Website](https://www.james-zou.com/)
 * **Been Kim** - [Website](https://beenkim.github.io/)
 
 

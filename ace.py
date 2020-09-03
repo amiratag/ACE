@@ -109,7 +109,7 @@ class ConceptDiscovery(object):
         concept_dir = os.path.join(self.source_dir, concept)
         img_paths = [
             os.path.join(concept_dir, d)
-            for d in tf.gfile.ListDirectory(concept_dir)
+            for d in tf.io.gfile.listdir(concept_dir)
         ]
         return load_images_from_files(
             img_paths,
@@ -218,7 +218,7 @@ class ConceptDiscovery(object):
             if method == 'slic':
                 segments = segmentation.slic(
                     img, n_segments=n_segmentss[i], compactness=compactnesses[i],
-                    sigma=sigmas[i])
+                    sigma=sigmas[i], start_label=1)
             elif method == 'watershed':
                 segments = segmentation.watershed(
                     img, markers=markerss[i], compactness=compactnesses[i])
@@ -463,10 +463,10 @@ class ConceptDiscovery(object):
         """
         rnd_acts_path = os.path.join(self.activation_dir, 'acts_{}_{}'.format(
             random_concept, bottleneck))
-        if not tf.gfile.Exists(rnd_acts_path):
+        if not tf.io.gfile.exists(rnd_acts_path):
             rnd_imgs = self.load_concept_imgs(random_concept, self.max_imgs)
             acts = get_acts_from_images(rnd_imgs, self.model, bottleneck)
-            with tf.gfile.Open(rnd_acts_path, 'w') as f:
+            with tf.io.gfile.GFile(rnd_acts_path, 'w') as f:
                 np.save(f, acts, allow_pickle=False)
             del acts
             del rnd_imgs
@@ -581,8 +581,9 @@ class ConceptDiscovery(object):
         """
         if directory is None:
             directory = self.cav_dir
-        params = tf.contrib.training.HParams(model_type='linear', alpha=.01)
-        cav_key = cav.CAV.cav_key([c, r], bn, params.model_type, params.alpha)
+
+        params = {'model_type': 'linear', 'alpha': .01}
+        cav_key = cav.CAV.cav_key([c, r], bn, params['model_type'], params['alpha'])
         cav_path = os.path.join(self.cav_dir, cav_key.replace('/', '.') + '.pkl')
         vector = cav.CAV.load_cav(cav_path).cavs[0]
         return np.expand_dims(vector, 0) / np.linalg.norm(vector, ord=2)
@@ -614,7 +615,7 @@ class ConceptDiscovery(object):
             bn_grads = np.zeros((acts.shape[0], np.prod(acts.shape[1:])))
             for i in range(len(acts)):
                 bn_grads[i] = self.model.get_gradient(
-                    acts[i:i + 1], [class_id], bn).reshape(-1)
+                    acts[i:i + 1], [class_id], bn, None).reshape(-1)
             gradients[bn] = bn_grads
         return gradients
 

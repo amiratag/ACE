@@ -20,15 +20,15 @@ def main(args):
     activations_dir = os.path.join(args.working_dir, 'acts/')
     results_summaries_dir = os.path.join(args.working_dir, 'results_summaries/')
 
-    if tf.gfile.Exists(args.working_dir):
-        tf.gfile.DeleteRecursively(args.working_dir)
+    if tf.io.gfile.exists(args.working_dir):
+        tf.io.gfile.rmtree(args.working_dir)
 
-    tf.gfile.MakeDirs(args.working_dir)
-    tf.gfile.MakeDirs(discovered_concepts_dir)
-    tf.gfile.MakeDirs(results_dir)
-    tf.gfile.MakeDirs(cavs_dir)
-    tf.gfile.MakeDirs(activations_dir)
-    tf.gfile.MakeDirs(results_summaries_dir)
+    tf.io.gfile.makedirs(args.working_dir)
+    tf.io.gfile.makedirs(discovered_concepts_dir)
+    tf.io.gfile.makedirs(results_dir)
+    tf.io.gfile.makedirs(cavs_dir)
+    tf.io.gfile.makedirs(activations_dir)
+    tf.io.gfile.makedirs(results_summaries_dir)
 
     random_concept = 'random_discovery'  # Random concept for statistical testing
     sess = utils.create_session()
@@ -58,7 +58,7 @@ def main(args):
 
     # Saving the concept discovery target class images
     image_dir = os.path.join(discovered_concepts_dir, 'images')
-    tf.gfile.MakeDirs(image_dir)
+    tf.io.gfile.makedirs(image_dir)
     ace_helpers.save_images(image_dir,
                             (cd.discovery_images * 256).astype(np.uint8))
     # Discovering Concepts

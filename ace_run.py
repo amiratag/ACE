@@ -1,15 +1,15 @@
 """This script runs the whole ACE method."""
 
-import sys
+import argparse
 import os
+import sys
+
 import numpy as np
-import sklearn.metrics as metrics
-from tcav import utils
 import tensorflow as tf
+from tcav import utils
 
 import ace_helpers
 from ace import ConceptDiscovery
-import argparse
 
 
 def main(args):

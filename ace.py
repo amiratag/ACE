@@ -5,17 +5,12 @@ ConceptDiscovery class that is able to discover the concepts belonging to one
 of the possible classification labels of the classification task of a network
 and calculate each concept's TCAV score..
 """
-from multiprocessing import dummy as multiprocessing
-import sys
-import os
-import numpy as np
-from PIL import Image
 import scipy.stats as stats
 import skimage.segmentation as segmentation
 import sklearn.cluster as cluster
 import sklearn.metrics.pairwise as metrics
-import tensorflow as tf
 from tcav import cav
+
 from ace_helpers import *
 
 

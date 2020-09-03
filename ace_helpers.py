@@ -1,17 +1,17 @@
 """ collection of various helper functions for running ACE"""
 
-from multiprocessing import dummy as multiprocessing
-import sys
 import os
-from matplotlib import pyplot as plt
+from multiprocessing import dummy as multiprocessing
+
 import matplotlib.gridspec as gridspec
-import tcav.model as model
 import numpy as np
+import tcav.model as model
+import tensorflow as tf
 from PIL import Image
+from matplotlib import pyplot as plt
 from skimage.segmentation import mark_boundaries
 from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
-import tensorflow as tf
 
 
 def make_model(sess, model_to_run, model_path,

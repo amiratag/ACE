@@ -36,7 +36,7 @@ def make_model(sess, model_to_run, model_path,
             sess, model_saved_path=model_path, labels_path=labels_path)
     elif model_to_run == 'GoogleNet':
         # common_typos_disable
-        mymodel = model.GoolgeNetWrapper_public(
+        mymodel = model.GoogleNetWrapper_public(
             sess, model_saved_path=model_path, labels_path=labels_path)
     else:
         raise ValueError('Invalid model name')
